@@ -1,3 +1,6 @@
+// Copyright Dakota G.
+// list of common words to filter through
+
 #pragma once
 #include "CoreMinimal.h"
 

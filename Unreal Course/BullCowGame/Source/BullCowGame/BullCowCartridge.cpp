@@ -1,8 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Dakota G.
 #include "BullCowCartridge.h"
 #include "HiddenWordList.h"
 
-void UBullCowCartridge::BeginPlay() // When the game starts
+void UBullCowCartridge::BeginPlay()           // When the game starts
 {
     Super::BeginPlay();
     Isogram = GetValidWords(HiddenList);
@@ -13,15 +13,13 @@ void UBullCowCartridge::BeginPlay() // When the game starts
 
 }
 
-void UBullCowCartridge::OnInput(const FString& PlayerInput) // When the player hits enter
+void UBullCowCartridge::OnInput(const FString& PlayerInput)                 // When the player hits enter
 {
-    if (bGameOver)
-    { //game over
+    if (bGameOver) {                                                        //game over
         ClearScreen();
         SetupGame();
     }
-    else
-    { //normal play
+    else {                                                                  //normal play
         ProcessGuess(PlayerInput);
     }
 }
@@ -29,7 +27,7 @@ void UBullCowCartridge::OnInput(const FString& PlayerInput) // When the player h
 void UBullCowCartridge::SetupGame()
 {
     HiddenWord = Isogram[FMath::RandRange(0,Isogram.Num()-1)];
-    Lives = HiddenWord.Len() * 2; //set difficulty
+    Lives = HiddenWord.Len() * 2;                                          //set difficulty based on word length
     bGameOver = false;
 
     //PrintLine(TEXT("The Hidden Word is: %s.\nIt is %i characters long."), *HiddenWord, HiddenWord.Len()); //Debug line
@@ -46,32 +44,30 @@ void UBullCowCartridge::EndGame()
 }
 
 void UBullCowCartridge::ProcessGuess(const FString& Guess){
-
-    if (Guess == HiddenWord){ //correct word, win
+    
+    if (Guess == HiddenWord){                                            //correct word, win
                 PrintLine(TEXT("You Win!!!"));
                 EndGame();
                 return;
     }
-
-    else if (Guess.Len() != HiddenWord.Len()){ //wrong number of letters
+    else if (Guess.Len() != HiddenWord.Len()){                          //wrong number of letters
         PrintLine(TEXT("The hidden word is %i letters long.\nTry again"), HiddenWord.Len());
         return;
     }
-
     else if (!IsIsogram(Guess)){
             PrintLine(TEXT("The word you entered has duplicate letters\nTry again"));
             return;
     }  
     
     //PrintLine(TEXT("Wrong!"));  //debug: wrong word
-    if (--Lives <= 0) { //life loss + check 
+    if (--Lives <= 0) {                                               //life loss + check 
         ClearScreen();
         PrintLine(TEXT("You have no lives left!"));
         PrintLine(TEXT("The Hidden word was: %s"), *HiddenWord);                
         EndGame();
         return;
-    } else { //wrong guess, not out of lives
-    
+    } else { 
+    //wrong guess, not out of lives
     FBullCowCount Score = GetBullCows(Guess);
 
     PrintLine(TEXT("You have %i bulls and %i cows"), Score.Bulls, Score.Cows);
@@ -110,13 +106,13 @@ TArray<FString> UBullCowCartridge::GetValidWords(const TArray<FString>& WordList
 
     FBullCowCount Count;
 
-    for(int32 GuessIndex = 0; GuessIndex < Guess.Len(); GuessIndex++){ //for every index the same bull++
+    for(int32 GuessIndex = 0; GuessIndex < Guess.Len(); GuessIndex++){                    //for every index the same bull++
         if (Guess[GuessIndex] == HiddenWord[GuessIndex]){
             Count.Bulls++;
             continue;
         }
 
-        for(int32 HiddenIndex = 0; HiddenIndex < HiddenWord.Len(); HiddenIndex++){ //if not, was it a cow, cow++
+        for(int32 HiddenIndex = 0; HiddenIndex < HiddenWord.Len(); HiddenIndex++){        //if not, was it a cow, cow++
             if(Guess[GuessIndex] == HiddenWord[HiddenIndex]){
                 Count.Cows++;
                 break;
